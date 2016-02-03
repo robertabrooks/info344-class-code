@@ -15,6 +15,7 @@ var ghStrategy = new GitHubStrategy(ghConfig,
     function(accessToken, refreshToke, profile, done) {
         console.log('Authentication Successful!');
         console.dir(profile);
+        // whatever is passed as the second argument here will be the authenticated user *****
         done(null, profile);
     });
     
@@ -68,6 +69,12 @@ app.use(function(req, res, next) {
 });
 
 app.use(express.static(__dirname + '/static/secure'));
+
+app.get('/api/v1/users/me', function(req, res) {
+    // res.JSON is the authenticated user
+    // req.user retursn it to the client
+    res.json(req.user);
+});
 
 app.listen(80, function() {
     console.log('server is listening...');
