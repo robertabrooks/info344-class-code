@@ -47,15 +47,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/signin/github', passport.authenticate('github'));
-app.get('/signin/github/callback', passport.authenticate('github'), //pass middleware function, called in same order called
+//pass middleware function, called in same order called
+app.get('/signin/github/callback', passport.authenticate('github'), 
     function(req, res) {
         res.redirect('/secure.html');
     });
-app.get('/signout', function(req, res) {
-    req.logout();
-    res.redirect('/');
-});
-
+    
 app.use(express.static(__dirname + '/static/public'));
 
 app.use(function(req, res, next) {
@@ -69,6 +66,11 @@ app.use(function(req, res, next) {
 });
 
 app.use(express.static(__dirname + '/static/secure'));
+
+app.get('/signout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+});
 
 app.get('/api/v1/users/me', function(req, res) {
     // res.JSON is the authenticated user
