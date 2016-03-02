@@ -63,6 +63,7 @@ func hashFile(infilePath string, outfilePath string, wg *sync.WaitGroup) {
 func main() {
     //user may specify data directory via command
     //line argument; defaults to ./data/chunks
+    //   verify that this is a legal directory // 
     dir := "./data/chunks/"
     if len(os.Args) > 1 {
         if _, err := os.Stat(os.Args[1]); err == nil {
@@ -73,10 +74,12 @@ func main() {
         }
     }
     //put hashes in a sub-directory named hashes
+    //   creates subdirectory called hashes that people can redirect into //
     hashesDir := dir + "hashes/"
     os.Mkdir(hashesDir, os.ModePerm)
 
     //get all files in the data directory
+    //   gives you a slice of strings  //
     files, err := ioutil.ReadDir(dir)
     if nil != err {
         log.Fatal(err)
@@ -86,11 +89,18 @@ func main() {
     startTime := time.Now()
 
     //TODO: for each file in the directory
-    //call hashFile() as a goroutine, passing
-    //the file name
+    //call hashFile() as a goroutine, passing the file name
     //use a sync.WaitGroup to block the main 
     //thread until all the goroutines have finished
-
+    wg := sync.WaitGroup{}
+    for _, file := range files {
+        if !file.IsDir() {
+            wg.Add(1)
+            go hashFile(dir +file.Name(), hashesDir + file.Name(), &wg)
+        }
+    }
+    // wait for all goroutines to finish
+    wg.Wait()
 
     //get the ending time and report duration
     dur := time.Since(startTime)
