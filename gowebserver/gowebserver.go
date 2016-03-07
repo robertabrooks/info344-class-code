@@ -69,5 +69,5 @@ func main() {
     http.HandleFunc("/api/v1/memstats", getMemStats) // http://localhost:9000/api/v1/memstats
     
     fmt.Println("Server Listening on port 9000...")
-    http.ListenAndServe(":9000", nil)
+    http.ListenAndServe(":9001", nil)
 }
